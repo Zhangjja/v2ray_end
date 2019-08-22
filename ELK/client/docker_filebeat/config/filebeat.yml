@@ -1,0 +1,19 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /etc/keepalived/*.log
+
+#output.console:
+#  pretty: true
+
+setup.template.enabled: true
+
+output.elasticsearch:
+  hosts: ["192.168.1.253:9200"]
+#  index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+#  setup.template.name: "customname"
+#  setup.template.pattern: "customname-*"
+#  setup.dashboards.index: "customname-*"
+  username: "elastic"
+  password: "123456"

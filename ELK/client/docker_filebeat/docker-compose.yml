@@ -1,0 +1,18 @@
+version: "2.1"
+services:
+
+
+  filebeat:
+    image: docker.hz.ulsee.com/elk/filebeat:6.5.4
+    container_name: filebeat
+    user: root #To read the docker socket
+    volumes:
+      #Mount the Filebeat configuration so users can make edits.
+      - ./config/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      #Mount the nginx logs into the Filebeat container so we can access and index them using the Filebeat nginx module.
+      - /root/v2ray:/opt
+      #Mount the Docker logs for indexing by the custom prospector ./config/filebeat/prospectors.d.
+      - /var/lib/docker/containers:/hostfs/var/lib/docker/containers
+      #Allows us to report on docker from the hosts information.
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: filebeat -e -strict.perms=false

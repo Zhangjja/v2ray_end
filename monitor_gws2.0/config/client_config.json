@@ -1,0 +1,159 @@
+{
+  "log": {
+    "access": "/var/log/v2ray/access.log",
+    "error": "/var/log/v2ray/error.log",
+    "loglevel": "warning"
+    },
+
+  "outbound": {
+    "protocol": "vmess",
+    "settings":{
+        "vnext":[
+            {
+                "address":"66.42.111.246",
+                "port": 37288,
+                "users": [
+                    {
+                    "id": "eb4dfdc6-152e-4f2a-b870-05eca726e9a5",
+                    "level": 1,
+                    "alterId": 64
+                    }
+                ]
+            }
+        ]
+    },
+    "streamSettings": {
+        "network": "kcp"
+      },
+    "mux": {"enabled": true}
+},
+
+  "outboundDetour": [
+    {
+        "protocol":"freedom",
+        "settings":{
+        },
+        "tag":"direct"
+     }    
+  ],
+  "inbound": {
+  "protocol": "dokodemo-door",
+  "port": 5353,
+  "settings": {
+    "address": "8.8.8.8",
+    "port": 53,
+    "network": "udp",
+    "timeout": 0,
+    "followRedirect": false
+    }
+},
+"inboundDetour": [
+    {
+"domainOverride":["http", "tls"], 
+"protocol": "dokodemo-door",
+"port":1060, 
+"settings":{
+    "network": "tcp",
+    "timeout": 30,
+    "followRedirect": true
+            }
+    },
+    {
+    "protocol":"socks",
+    "port":8080, 
+    "settings":{
+            "auth":"noauth",
+            "udp":false,
+            "ip":"127.0.0.1"
+            }
+    }
+    ],
+
+
+  "routing": {
+       "strategy":"rules",
+      "settings":{
+         "domainStrategy":"IPIfNonMatch",
+         "rules":[
+            {
+               "type":"field",
+               "port":"1-52",
+               "outboundTag":"direct"
+            },
+            {
+               "type":"field",
+               "port":"54-79",
+               "outboundTag":"direct"
+            },
+            {
+               "type":"field",
+               "port":"81-442",
+               "outboundTag":"direct"
+            },
+            {
+               "type":"field",
+               "port":"444-3999",
+               "outboundTag":"direct"
+            },
+            {
+               "type":"field",
+               "port":"4001-65535", 
+               "outboundTag":"direct"
+            },
+            {
+		"domain":[ 
+                "vultr.com"
+                ],
+                  "type":"field",
+                "outboundTag":"direct"
+              },
+            {
+               "type":"chinasites",
+               "outboundTag":"direct"
+            },
+            {
+               "type":"field",
+               "ip":[
+                  "0.0.0.0/8",
+                  "10.0.0.0/8",
+                  "100.64.0.0/10",
+                  "127.0.0.0/8",
+                  "169.254.0.0/16",
+                  "172.16.0.0/12",
+                  "192.0.0.0/24",
+                  "192.0.2.0/24",
+                  "192.168.0.0/16",
+                  "198.18.0.0/15",
+                  "198.51.100.0/24",
+                  "203.0.113.0/24",
+                  "::1/128",
+                  "fc00::/7",
+                  "fe80::/10"
+               ],
+               "outboundTag":"direct"
+            },
+            {
+               "type":"chinaip",
+               "outboundTag":"direct"
+            }
+         ]
+      }   
+  },
+   "transport":{
+      "tcpSettings":{
+         "connectionReuse":true
+      },
+      "kcpSettings":{
+         "mtu":1350,
+         "tti":20,
+         "uplinkCapacity":100,
+         "downlinkCapacity":100,
+         "congestion":false,
+         "readBufferSize":5,
+         "writeBufferSize":5,
+         "header":{
+            "type":"utp"
+         }
+      }
+   }
+}

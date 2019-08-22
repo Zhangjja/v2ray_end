@@ -1,0 +1,108 @@
+#!/bin/sh
+
+# Author:	https://github.com/softwaredownload/openwrt-fanqiang
+# Date:		2015-12-23
+
+#create a new chain named V2RAY
+iptables -t nat -N V2RAY
+iptables -t nat -N V2RAY_WHITELIST
+
+# Ignore your shadowsocks server's addresses
+# It's very IMPORTANT, just be careful.
+
+#iptables -t nat -A V2RAY -d 45.76.71.157  -j RETURN
+iptables -t nat -A V2RAY -d  149.28.94.184 -j RETURN
+
+#for hulu.com
+iptables -t nat -A V2RAY -p tcp --dport 1935 -j REDIRECT --to-ports 1060 
+iptables -t nat -A V2RAY -p udp --dport 1935 -j REDIRECT --to-ports 1060 
+# Ignore LANs IP address
+iptables -t nat -A V2RAY -d 0.0.0.0/8 -j RETURN
+iptables -t nat -A V2RAY -d 10.0.0.0/8 -j RETURN
+iptables -t nat -A V2RAY -d 127.0.0.0/8 -j RETURN
+iptables -t nat -A V2RAY -d 169.254.0.0/16 -j RETURN
+iptables -t nat -A V2RAY -d 172.16.0.0/12 -j RETURN
+iptables -t nat -A V2RAY -d 192.168.0.0/16 -j RETURN
+iptables -t nat -A V2RAY -d 10.24.0.0/16 -j RETURN
+iptables -t nat -A V2RAY -d 224.0.0.0/4 -j RETURN
+iptables -t nat -A V2RAY -d 240.0.0.0/4 -j RETURN
+
+# Check whitelist
+iptables -t nat -A V2RAY -j V2RAY_WHITELIST
+iptables -t nat -A V2RAY -m mark --mark 1 -j RETURN
+
+# Anything else should be redirected to shadowsocks's local port
+iptables -t nat -A V2RAY -p tcp -j REDIRECT --to-ports 1060 
+#www.pinerest.com
+iptables -t nat -A V2RAY -d 151.0.0.0/8 -j REDIRECT --to-ports 1060
+#iptables -t nat -A V2RAY_WHITELIST -d 1.0.0.0/8 -j MARK --set-mark 1
+
+# Apply the rules
+iptables -t nat -A PREROUTING -p tcp -j V2RAY
+
+# Ignore China IP address
+# for white_ip in `cat /etc/chinadns_chnroute.txt`;
+# do
+#   iptables -t nat -A V2RAY_WHITELIST -d "${white_ip}" -j MARK --set-mark 1
+# done
+
+# Ignore Asia IP address
+iptables -t nat -A V2RAY_WHITELIST -d 1.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 14.0.0.0/8 -j MARK --set-mark 1
+# www.pinterest.com
+#iptables -t nat -A V2RAY_WHITELIST -d 23.52.0.0 -j MARK --set-mark 1
+
+iptables -t nat -A V2RAY_WHITELIST -d 27.0.0.0/8 -j MARK --set-mark 1
+#gitlab
+iptables -t nat -A V2RAY_WHITELIST -d 35.231.145.151 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 36.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 39.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 42.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 49.0.0.0/8 -j MARK --set-mark 1
+#github
+iptables -t nat -A V2RAY_WHITELIST -d 52.74.223.119 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 58.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 59.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 60.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 61.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 101.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 103.0.0.0/8 -j MARK --set-mark 1
+#ulsee
+iptables -t nat -A V2RAY_WHITELIST -d 104.199.209.166 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 106.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 110.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 111.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 112.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 113.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 114.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 115.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 116.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 117.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 118.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 119.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 120.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 121.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 122.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 123.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 124.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 125.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 126.0.0.0/8 -j MARK --set-mark 1
+#wwww.pinerest.com
+#iptables -t nat -A V2RAY_WHITELIST -d 151.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 169.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 175.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 180.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 182.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 183.0.0.0/8 -j MARK --set-mark 1
+#github
+iptables -t nat -A V2RAY_WHITELIST -d 192.30.255.0/24 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 202.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 203.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 210.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 211.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 218.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 219.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 220.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 221.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 222.0.0.0/8 -j MARK --set-mark 1
+iptables -t nat -A V2RAY_WHITELIST -d 223.0.0.0/8 -j MARK --set-mark 1
